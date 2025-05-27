@@ -173,3 +173,36 @@ class DataPipeline:
         for name, step in self.steps:
             X = step.fit_transform(X, y)
         return X
+
+############################
+## Visualization
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+def plot_violin_and_box(df, features):
+    """
+    Plots violin + box + strip plots for each feature in `features` from DataFrame `df`.
+    """
+    sns.set(style="whitegrid")
+    n = len(features)
+    fig, axes = plt.subplots(1, n, figsize=(5 * n, 6))
+    if n == 1:
+        axes = [axes]
+
+    fig.suptitle(f"Distribution of: {', '.join(features)}", fontsize=20)
+
+    for ax, feat in zip(axes, features):
+        sns.violinplot(y=df[feat], ax=ax, inner=None, color="lightblue")
+        sns.boxplot(
+            y=df[feat], ax=ax, width=0.2,
+            boxprops={"facecolor": "white", "edgecolor": "black"},
+            medianprops={"color": "red"},
+            whiskerprops={"color": "black"},
+            capprops={"color": "black"}
+        )
+        sns.stripplot(y=df[feat], ax=ax, color="green", size=5, jitter=True, alpha=0.5)
+        ax.set_xlabel(feat)
+
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
+    plt.show()
